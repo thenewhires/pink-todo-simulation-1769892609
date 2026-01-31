@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pink Todo</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #ffe4e1; /* Light pink */
+        }
+        h1 {
+            color: #ff69b4; /* Hot pink */
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 8px;
+            border-bottom: 1px solid #ffb6c1; /* Light pink border */
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ffb6c1;
+        }
+        button {
+            background-color: #ff69b4;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+        }
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pink Todo List</h1>
+
+    <form method="post" action="{% url 'add_todo' %}">
+        {% csrf_token %}
+        <input type="text" name="text" placeholder="Add a todo">
+        <button type="submit">Add</button>
+    </form>
+
+    <ul>
+        {% for todo in todos %}
+            <li {% if todo.completed %}class="completed"{% endif %}>
+                {% if todo.completed %}
+                    {{ todo.text }}
+                {% else %}
+                    {{ todo.text }}
+                {% endif %}
+                <a href="{% url 'complete_todo' todo.id %}">Complete</a>  <!-- Bug: URL contains correct ID but the ID isn't read -->
+
+                <a href="{% url 'delete_todo' todo.id %}">Delete</a>
+            </li>
+        {% empty %}
+            <li>No todos yet!</li>
+        {% endfor %}
+    </ul>
+
+    {% if error_message %}
+        <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+</body>
+</html>
